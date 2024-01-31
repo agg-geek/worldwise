@@ -1,21 +1,26 @@
+import { Link } from 'react-router-dom';
+import styles from './css/Home.module.css';
 import PageNav from '../components/PageNav';
 
-function Home() {
+export default function Homepage() {
 	return (
-		<div>
-			<h1>Home</h1>
-			{/* these anchor links work, but they end up reloading the page */}
-			{/* thus, the app does not remain a SPA with these anchors for routing */}
-			{/* <a href="/product">Product</a> */}
-			{/* <a href="/pricing">Pricing</a> */}
-
-			{/* use Link from react-router-dom for routing a SPA */}
-			{/* note that this Link will be converted to <a> in the DOM (check the DOM!) */}
-			{/* <Link to="/product">Product</Link> */}
-
-			{/* PageNav uses NavLink instead of Link */}
+		<main className={styles.homepage}>
 			<PageNav />
-		</div>
+			<section>
+				<h1>
+					You travel the world.
+					<br />
+					WorldWise keeps track of your adventures.
+				</h1>
+				<h2>
+					A world map that tracks your footsteps into every city you can think
+					of. Never forget your wonderful experiences, and show your friends how
+					you have wandered the world.
+				</h2>
+				<Link to="/app" className="cta">
+					Start tracking now!
+				</Link>
+			</section>
+		</main>
 	);
 }
-export default Home;
