@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import styles from './css/City.module.css';
 import { useCity } from '../contexts/CityContext';
 import Spinner from './Spinner';
+import BackButton from './BackButton';
 
 const formatDate = date =>
 	new Intl.DateTimeFormat('en', {
@@ -23,10 +24,6 @@ function City() {
 		[cityId]
 	);
 
-	// when we click on a different city after we've already viewed a previous city
-	// then meanwhile the previous city data is still displayed while new city data is fetched
-	// hence, show the spinner while you're loading the data
-	// also, this early return can only come after useEffect above, due to rules of hooks
 	if (isLoading) return <Spinner />;
 
 	const { cityName, emoji, date, notes } = currCity;
@@ -61,6 +58,10 @@ function City() {
 				>
 					Check out {cityName} on Wikipedia &rarr;
 				</a>
+			</div>
+
+			<div>
+				<BackButton />
 			</div>
 		</div>
 	);
