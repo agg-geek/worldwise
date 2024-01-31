@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './css/City.module.css';
 import { useCity } from '../contexts/CityContext';
+import Spinner from './Spinner';
 
 const formatDate = date =>
 	new Intl.DateTimeFormat('en', {
@@ -13,24 +14,20 @@ const formatDate = date =>
 
 function City() {
 	const { cityId } = useParams();
-
-	// we require the city data for cityId from API
-	// however, this city state is not local to this component
-	// we will also use it in the CityList component to mark the
-	// currently active city after you close the city details
-	// hence, instead of defining the state here, we make it global
-	// and hence end up using the CityContext
-
-	const { currCity, getCurrCity } = useCity();
+	const { currCity, getCurrCity, isLoading } = useCity();
 
 	useEffect(
 		function () {
 			getCurrCity(cityId);
 		},
-		// we also need getCurrCity function as the dependency
-		// but we cannot add it, will be explained later
 		[cityId]
 	);
+
+	// when we click on a different city after we've already viewed a previous city
+	// then meanwhile the previous city data is still displayed while new city data is fetched
+	// hence, show the spinner while you're loading the data
+	// also, this early return can only come after useEffect above, due to rules of hooks
+	if (isLoading) return <Spinner />;
 
 	const { cityName, emoji, date, notes } = currCity;
 

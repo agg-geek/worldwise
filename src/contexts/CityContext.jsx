@@ -30,7 +30,6 @@ function CityProvider({ children }) {
 	async function getCurrCity(cityId) {
 		try {
 			setIsLoading(true);
-			// notice the API URL from which the data is fetched
 			const res = await fetch(`${BASE_URL}/cities/${cityId}`);
 			const data = await res.json();
 			setCurrCity(data);
