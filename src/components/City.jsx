@@ -1,5 +1,7 @@
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import styles from './css/City.module.css';
+import { useCity } from '../contexts/CityContext';
 
 const formatDate = date =>
 	new Intl.DateTimeFormat('en', {
@@ -12,30 +14,26 @@ const formatDate = date =>
 function City() {
 	const { cityId } = useParams();
 
-	const [searchParams, setSearchParams] = useSearchParams();
-	const lat = searchParams.get('lat');
-	const lng = searchParams.get('lng');
+	// we require the city data for cityId from API
+	// however, this city state is not local to this component
+	// we will also use it in the CityList component to mark the
+	// currently active city after you close the city details
+	// hence, instead of defining the state here, we make it global
+	// and hence end up using the CityContext
 
-	return (
-		<>
-			<h1>City {cityId}</h1>
-			<h1>
-				{lat} {lng}
-			</h1>
-		</>
+	const { currCity, getCurrCity } = useCity();
+
+	useEffect(
+		function () {
+			getCurrCity(cityId);
+		},
+		// we also need getCurrCity function as the dependency
+		// but we cannot add it, will be explained later
+		[cityId]
 	);
 
-	/*
-	// TEMP DATA
-	const currentCity = {
-		cityName: 'Lisbon',
-		emoji: '🇵🇹',
-		date: '2027-10-31T15:59:59.138Z',
-		notes: 'My favorite city so far!',
-	};
+	const { cityName, emoji, date, notes } = currCity;
 
-	const { cityName, emoji, date, notes } = currentCity;
-    
 	return (
 		<div className={styles.city}>
 			<div className={styles.row}>
@@ -69,7 +67,6 @@ function City() {
 			</div>
 		</div>
 	);
-    */
 }
 
 export default City;
