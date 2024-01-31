@@ -8,18 +8,15 @@ import Pricing from './pages/Pricing';
 import Login from './pages/Login';
 import AppLayout from './pages/AppLayout';
 import CityList from './components/CityList';
+import CountryList from './components/CountryList';
 import PageNotFound from './pages/PageNotFound';
 
 const BASE_URL = 'http://localhost:8000';
 
 function App() {
-	// we are keeping the state here as we require the data for /app/cities,
-	// /app/countries and for the map as well
 	const [cities, setCities] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 
-	// we are loading the data as soon as App renders, which is useless
-	// as we need the data only for /app, not for / route, but anyways
 	useEffect(function () {
 		async function fetchCities() {
 			try {
@@ -54,7 +51,10 @@ function App() {
 						path="cities"
 						element={<CityList cities={cities} isLoading={isLoading} />}
 					/>
-					<Route path="countries" element={<p>Countries</p>} />
+					<Route
+						path="countries"
+						element={<CountryList cities={cities} isLoading={isLoading} />}
+					/>
 					<Route path="form" element={<p>Form</p>} />
 				</Route>
 				<Route path="*" element={<PageNotFound />} />
