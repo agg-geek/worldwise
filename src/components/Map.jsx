@@ -1,35 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { useCity } from '../contexts/CityContext';
 import styles from './css/Map.module.css';
 
-// see explanation above searchParams first
-// every change in react leaflet occurs via components
 function CenterMap({ position }) {
 	const map = useMap();
 	map.setView(position);
-	return null; // you need to return JSX, so just return null here
+	return null;
 }
 
 function Map() {
 	const navigate = useNavigate();
 	const { cities } = useCity();
 
-	// you use the lat and lng from the URL query to go to a particular position
-	// however, when you are browsing a city and you change it,
-	// then the map doesn't change its position, so you need to make leaflet change it
-	const [searchParams, setSearchParams] = useSearchParams();
-	const lat = searchParams.get('lat') ?? 39;
-	const lng = searchParams.get('lng') ?? -9;
+	const [searchParams] = useSearchParams();
+	const lat = searchParams.get('lat');
+	const lng = searchParams.get('lng');
 
-	// const [mapPosition, setMapPosition] = useState([39, -9]);
+	const [mapPosition, setMapPosition] = useState([lat ?? 39, lng ?? -9]);
+
+	// whenever we opened a city, map moved to that location
+	// but when we closed that city, the map again moved to the default location
+	// hence we now change the location only if a new city is opened
+	// otherwise we don't modify anything
+	useEffect(
+		function () {
+			if (lat && lng) setMapPosition([lat, lng]);
+		},
+		[lat, lng]
+	);
 
 	return (
 		<div className={styles.mapContainer}>
 			<MapContainer
-				// center={mapPosition}
-				center={[lat, lng]}
+				center={mapPosition}
 				zoom={8}
 				scrollWheelZoom={true}
 				className={styles.map}
@@ -50,7 +55,7 @@ function Map() {
 					</Marker>
 				))}
 
-				<CenterMap position={[lat, lng]} />
+				<CenterMap position={mapPosition} />
 			</MapContainer>
 		</div>
 	);
