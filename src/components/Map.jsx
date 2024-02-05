@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { useNavigate } from 'react-router-dom';
+import {
+	MapContainer,
+	TileLayer,
+	Marker,
+	Popup,
+	useMap,
+	useMapEvent,
+} from 'react-leaflet';
 import { useGeolocation } from '../hooks/useGeolocation';
+import { useURLPosition } from '../hooks/useURLPosition';
 import { useCity } from '../contexts/CityContext';
 import styles from './css/Map.module.css';
 import Button from '../components/Button';
@@ -12,13 +20,24 @@ function CenterMap({ position }) {
 	return null;
 }
 
+// open the form in the sidebar when the map is clicked
+// pass the location of the click to the form component
+// so that the form component can read it (so use URL for global state)
+function DetectMapClick() {
+	const navigate = useNavigate();
+
+	useMapEvent({
+		click: e => {
+			// console.log(e);
+			navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`);
+		},
+	});
+}
+
 function Map() {
 	const { cities } = useCity();
 
-	const [searchParams] = useSearchParams();
-	const lat = searchParams.get('lat');
-	const lng = searchParams.get('lng');
-
+	const [lat, lng] = useURLPosition();
 	const [mapPosition, setMapPosition] = useState([lat ?? 39, lng ?? -9]);
 
 	const {
@@ -27,9 +46,6 @@ function Map() {
 		getPosition,
 	} = useGeolocation();
 
-	// on clicking 'Use your position' button, we fetch the user's location
-	// via geolocation, and then we synchronize the current position with
-	// the map position
 	useEffect(
 		function () {
 			if (geolocationPosition)
@@ -75,6 +91,7 @@ function Map() {
 				))}
 
 				<CenterMap position={mapPosition} />
+				<DetectMapClick />
 			</MapContainer>
 		</div>
 	);
