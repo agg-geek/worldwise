@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { useGeolocation } from '../hooks/useGeolocation';
 import { useCity } from '../contexts/CityContext';
 import styles from './css/Map.module.css';
+import Button from '../components/Button';
 
 function CenterMap({ position }) {
 	const map = useMap();
@@ -11,7 +13,6 @@ function CenterMap({ position }) {
 }
 
 function Map() {
-	const navigate = useNavigate();
 	const { cities } = useCity();
 
 	const [searchParams] = useSearchParams();
@@ -20,10 +21,23 @@ function Map() {
 
 	const [mapPosition, setMapPosition] = useState([lat ?? 39, lng ?? -9]);
 
-	// whenever we opened a city, map moved to that location
-	// but when we closed that city, the map again moved to the default location
-	// hence we now change the location only if a new city is opened
-	// otherwise we don't modify anything
+	const {
+		isLoading: isLoadingPosition,
+		position: geolocationPosition,
+		getPosition,
+	} = useGeolocation();
+
+	// on clicking 'Use your position' button, we fetch the user's location
+	// via geolocation, and then we synchronize the current position with
+	// the map position
+	useEffect(
+		function () {
+			if (geolocationPosition)
+				setMapPosition([geolocationPosition.lat, geolocationPosition.lng]);
+		},
+		[geolocationPosition]
+	);
+
 	useEffect(
 		function () {
 			if (lat && lng) setMapPosition([lat, lng]);
@@ -33,6 +47,11 @@ function Map() {
 
 	return (
 		<div className={styles.mapContainer}>
+			{!geolocationPosition && (
+				<Button type="position" onClick={getPosition}>
+					{isLoadingPosition ? 'Loading...' : 'Use your position'}
+				</Button>
+			)}
 			<MapContainer
 				center={mapPosition}
 				zoom={8}
