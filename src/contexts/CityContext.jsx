@@ -44,9 +44,6 @@ function CityProvider({ children }) {
 	async function createCity(city) {
 		try {
 			setIsLoading(true);
-			// we send a POST request to our fake API, json-server will create
-			// the city for us, and it will also add an id by default
-			// the new city will be automatically added to the cities.json file
 			const res = await fetch(`${BASE_URL}/cities`, {
 				method: 'POST',
 				body: JSON.stringify(city),
@@ -56,13 +53,25 @@ function CityProvider({ children }) {
 			});
 
 			const data = await res.json();
-			// json-server will add the new city to the cities.json "db"
-			// however, react will still use the old state,
-			// so we need to manually add the city
-			// this is bad, but we will use react-query to fix this later
 			setCities(cities => [...cities, data]);
 		} catch (err) {
-			alert('There was an error loading data');
+			alert('There was an error creating city');
+			console.log(err);
+		} finally {
+			setIsLoading(false);
+		}
+	}
+
+	async function deleteCity(cityId) {
+		try {
+			setIsLoading(true);
+			await fetch(`${BASE_URL}/cities/${cityId}`, {
+				method: 'DELETE',
+			});
+
+			setCities(cities => cities.filter(city => city.id !== cityId));
+		} catch (err) {
+			alert('There was an error deleting the city');
 			console.log(err);
 		} finally {
 			setIsLoading(false);
@@ -77,6 +86,7 @@ function CityProvider({ children }) {
 				currCity,
 				getCurrCity,
 				createCity,
+				deleteCity,
 			}}
 		>
 			{children}

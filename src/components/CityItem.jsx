@@ -19,7 +19,15 @@ function CityItem({ city }) {
 		position: { lat, lng },
 	} = city;
 
-	const { currCity } = useCity();
+	const { currCity, deleteCity } = useCity();
+
+	// adding functionality to remove city when cancel btn is clicked
+	function handleClick(evt) {
+		// Clicking on the cancel btn will also cause the city to open due to the Link
+		// hence, preventDefault
+		evt.preventDefault();
+		deleteCity(cityId);
+	}
 
 	return (
 		<li>
@@ -32,7 +40,10 @@ function CityItem({ city }) {
 				<span className={styles.emoji}>{emoji}</span>
 				<h3 className={styles.name}>{cityName}</h3>
 				<time className={styles.date}>{formatDate(date)}</time>
-				<button className={styles.deleteBtn}>&times;</button>
+
+				<button className={styles.deleteBtn} onClick={handleClick}>
+					&times;
+				</button>
 			</Link>
 		</li>
 	);
