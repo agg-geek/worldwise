@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useReducer, useState } from 'react';
+import { createContext, useContext, useEffect, useReducer } from 'react';
 
 const BASE_URL = 'http://localhost:8000';
 
@@ -11,16 +11,10 @@ const initialState = {
 	error: '',
 };
 
-// Using useContext and useReducer together
-// reducers need to be pure functions, hence due to the API requests
-// being made, the async functions cannot be moved here directly
 function reducer(state, action) {
 	switch (action.type) {
 		case 'loading':
 			return { ...state, isLoading: true };
-
-		// a good idea to model action names as events rather than setters
-		// hence, use ''cities/loaded' instead of setCities
 		case 'cities/loaded':
 			return { ...state, isLoading: false, cities: action.payload };
 		case 'city/loaded':
@@ -133,9 +127,6 @@ function CityProvider({ children }) {
 	}
 
 	return (
-		// we could've passed the dispatch fn itself to the child components
-		// but then we would have to write the handler logic inside the component
-		// so we don't clutter the components, we just create the fns here
 		<CityContext.Provider
 			value={{
 				cities,
