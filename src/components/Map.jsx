@@ -20,17 +20,11 @@ function CenterMap({ position }) {
 	return null;
 }
 
-// open the form in the sidebar when the map is clicked
-// pass the location of the click to the form component
-// so that the form component can read it (so use URL for global state)
 function DetectMapClick() {
 	const navigate = useNavigate();
 
 	useMapEvent({
-		click: e => {
-			// console.log(e);
-			navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`);
-		},
+		click: e => navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`),
 	});
 }
 

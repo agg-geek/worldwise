@@ -18,8 +18,6 @@ function reducer(state, action) {
 	}
 }
 
-// we don't do real authentication
-// we implement fake login by considering the only possible user as USER below
 const USER = {
 	name: 'Jack',
 	email: 'jack@example.com',
@@ -30,7 +28,6 @@ const USER = {
 function AuthProvider({ children }) {
 	const [{ user, isAuthenticated }, dispatch] = useReducer(reducer, initialState);
 
-	// login, logout fns will be API requests, here they're just fake
 	function login(email, password) {
 		if (email === USER.email && password === USER.password)
 			dispatch({ type: 'login', payload: USER });

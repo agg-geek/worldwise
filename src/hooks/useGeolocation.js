@@ -1,5 +1,3 @@
-// this custom hook was built as a challenge exercise
-
 import { useState } from 'react';
 
 export function useGeolocation(defaultPosition = null) {

@@ -24,11 +24,6 @@ export default function Login() {
 
 	useEffect(
 		function () {
-			// is the user is already logged in, if you login again, then the user is
-			// directly navigated to /app, the user is never shown the /login page
-			// also, once you reach /app and hit the back button, you never go back
-			// as, going back means going to /login, and this then redirects to /app again
-			// hence, replace: true in navigate below
 			if (isAuthenticated) navigate('/app', { replace: true });
 		},
 		[isAuthenticated, navigate]
