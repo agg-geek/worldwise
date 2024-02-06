@@ -21,10 +21,7 @@ function CityItem({ city }) {
 
 	const { currCity, deleteCity } = useCity();
 
-	// adding functionality to remove city when cancel btn is clicked
 	function handleClick(evt) {
-		// Clicking on the cancel btn will also cause the city to open due to the Link
-		// hence, preventDefault
 		evt.preventDefault();
 		deleteCity(cityId);
 	}
